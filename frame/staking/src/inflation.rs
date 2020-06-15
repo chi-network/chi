@@ -20,20 +20,21 @@
 //! The staking rate in NPoS is the total amount of tokens staked by nominators and validators,
 //! divided by the total token supply.
 
-use sp_runtime::{Perbill, traits::AtLeast32Bit, curve::PiecewiseLinear};
+use sp_runtime::{Perbill, traits::AtLeast32Bit, curve::{PiecewiseLinear, calculate_issuance}};
 
 /// The total payout to all validators (and their nominators) per era and maximum payout.
 ///
 /// Defined as such:
-/// `staker-payout = yearly_inflation(npos_token_staked / total_tokens) * total_tokens / era_per_year`
-/// `maximum-payout = max_yearly_inflation * total_tokens / era_per_year`
+/// `staker-payout = yearly_inflation(npos_token_staked / old_issuance) * old_issuance / era_per_year`
+/// `maximum-payout = max_yearly_inflation * old_issuance / era_per_year`
 ///
 /// `era_duration` is expressed in millisecond.
 pub fn compute_total_payout<N>(
 	yearly_inflation: &PiecewiseLinear<'static>,
 	npos_token_staked: N,
-	total_tokens: N,
-	era_duration: u64
+	old_issuance: N,
+	era_duration: u64,
+	era_index: u32,
 ) -> (N, N) where N: AtLeast32Bit + Clone {
 	// Milliseconds per year for the Julian year (365.25 days).
 	const MILLISECONDS_PER_YEAR: u64 = 1000 * 3600 * 24 * 36525 / 100;
@@ -41,10 +42,19 @@ pub fn compute_total_payout<N>(
 	let portion = Perbill::from_rational_approximation(era_duration as u64, MILLISECONDS_PER_YEAR);
 	let payout = portion * yearly_inflation.calculate_for_fraction_times_denominator(
 		npos_token_staked,
-		total_tokens.clone(),
+		old_issuance.clone(),
 	);
-	let maximum = portion * (yearly_inflation.maximum * total_tokens);
-	(payout, maximum)
+	// Calculate the amount that should be minted based on the network inflation rate
+	let new_issuance: N = calculate_issuance(era_index, old_issuance);
+
+	// Check the reward ratio is below the inflation rate
+	if payout >= new_issuance {
+		// Payout goes to stakers, maximum - payout goes to treasury
+		(new_issuance, N::zero())
+	} else {
+		let rest: N = new_issuance - payout.clone();
+		(payout, rest)
+	}
 }
 
 #[cfg(test)]

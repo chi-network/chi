@@ -33,6 +33,28 @@ fn abs_sub<N: Ord + Sub<Output=N> + Clone>(a: N, b: N) -> N where {
 	a.clone().max(b.clone()) - a.min(b)
 }
 
+// Compute the total issuance at a given era_index.
+// This is guaranteed not to overflow on whatever values nor lose precision.
+// Issuance( m / ( x^2 + c ) + b ) * decimals
+pub fn calculate_issuance<N>(era_index: u32, old_issuance: N) -> N where
+	N: AtLeast32Bit + Clone
+{
+	let m: u64 = 0_777_777;
+	let c: u64 = 0_010_000;
+	let b: u64 = 7;
+	let era_per_year: u32 = era_index / 9366;
+	let denominator: u32 = era_per_year.saturating_mul(era_per_year);
+	// Issuance = 7_777_777 * 10^6
+	let new_total: u64 = 100 * 1_000_000 * era_index as u64;
+
+	if era_index == 0 {
+		N::zero()
+	} else {
+		new_total.saturated_into::<N>()
+	}
+
+}
+
 impl<'a> PiecewiseLinear<'a> {
 	/// Compute `f(n/d)*d` with `n <= d`. This is useful to avoid loss of precision.
 	pub fn calculate_for_fraction_times_denominator<N>(&self, n: N, d: N) -> N where

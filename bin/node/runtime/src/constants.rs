@@ -21,8 +21,8 @@
 pub mod currency {
 	use node_primitives::Balance;
 
-	pub const MICROCHI: Balance = 1_000_000_000;
-	pub const MILLICHI: Balance = 1_000 * MICROCHI;    // assume this is worth about a cent.
+	pub const MICROCHI: Balance = 100;
+	pub const MILLICHI: Balance = 100 * MICROCHI;    // assume this is worth about a cent.
 	pub const CHI: Balance = 100 * MILLICHI;
 
 	pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -51,7 +51,7 @@ pub mod time {
 	/// `SLOT_DURATION` should have the same value.
 	///
 	/// <https://research.web3.foundation/en/latest/polkadot/BABE/Babe/#6-practical-results>
-	pub const MILLISECS_PER_BLOCK: Moment = 3000;
+	pub const MILLISECS_PER_BLOCK: Moment = 7000;
 	pub const SECS_PER_BLOCK: Moment = MILLISECS_PER_BLOCK / 1000;
 
 	pub const SLOT_DURATION: Moment = MILLISECS_PER_BLOCK;

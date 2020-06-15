@@ -2706,6 +2706,7 @@ impl<T: Trait> Module<T> {
 				T::Currency::total_issuance(),
 				// Duration of era; more than u64::MAX is rewarded as u64::MAX.
 				era_duration.saturated_into::<u64>(),
+				active_era.index,
 			);
 			let rest = max_payout.saturating_sub(validator_payout);
 
