@@ -7523,6 +7523,7 @@ dependencies = [
  "sp-io",
  "sp-state-machine",
  "sp-std",
+ "substrate-fixed",
 ]
 
 [[package]]
@@ -7945,6 +7946,15 @@ name = "substrate-build-script-utils"
 version = "2.0.0-rc3"
 dependencies = [
  "platforms",
+]
+
+[[package]]
+name = "substrate-fixed"
+version = "0.5.4"
+source = "git+https://github.com/social-network/substrate-fixed#2c52170fa02507dc5b52c516061302670860869a"
+dependencies = [
+ "parity-scale-codec",
+ "typenum",
 ]
 
 [[package]]

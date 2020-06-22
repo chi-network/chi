@@ -96,7 +96,7 @@ fn staging_testnet_config_genesis() -> GenesisConfig {
 		// 5DtpaL5v19x3ywZ77zaoyKrHyd8Wjb2eNdxs9Vk8x3HDuQ1q
 		hex!["50eea0efd2ca33f4f95ef5b0069950471a1f203906a671785be7638dc137eb05"].unchecked_into(),
 		// 5Dw7N13SfaqAcEHPeuVhtWMcSox9j48uBnN6gsNDEeuQfapt
-		hex!["52ada18bb3504cc371095cdf897427a164ef5f4237bd778c46685bb4b931f569"].unchecked_into(),
+		hex!["426e2a17182791ad6054a3e6841b1b0bbf3d460973c758e9e7101ef47d9703dd"].unchecked_into(),
 	),(
 		// 5Ea6ZhWypDZee74f7GSmUV6SHGV2T13C4cTF5e1KBQy8QHzw
 		hex!["6ee3060d21fb08bd859c09a78fa7b128c5d63a0143140b8b228277e5c1f33e02"].into(),

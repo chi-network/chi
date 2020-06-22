@@ -19,6 +19,8 @@
 
 use crate::{Perbill, traits::{AtLeast32Bit, SaturatedConversion}};
 use core::ops::Sub;
+use substrate_fixed::transcendental::{exp};
+use substrate_fixed::types::{I32F0, I32F32, U0F64, I64F64};
 
 /// Piecewise Linear function in [0, 1] -> [0, 1].
 #[derive(PartialEq, Eq, sp_core::RuntimeDebug)]
@@ -35,24 +37,21 @@ fn abs_sub<N: Ord + Sub<Output=N> + Clone>(a: N, b: N) -> N where {
 
 // Compute the total issuance at a given era_index.
 // This is guaranteed not to overflow on whatever values nor lose precision.
-// Issuance( m / ( x^2 + c ) + b ) * decimals
+// Issuance follows a sigmoid function * decimals
 pub fn calculate_issuance<N>(era_index: u32, old_issuance: N) -> N where
 	N: AtLeast32Bit + Clone
 {
-	let m: u64 = 0_777_777;
-	let c: u64 = 0_010_000;
-	let b: u64 = 7;
-	let era_per_year: u32 = era_index / 9366;
-	let denominator: u32 = era_per_year.saturating_mul(era_per_year);
-	// Issuance = 7_777_777 * 10^6
-	let new_total: u64 = 100 * 1_000_000 * era_index as u64;
+	// Issuance formula
+	// type I = I32F32;
+	// let a = I::from_num(30);
+	// let c = I::from_num(77777.77777);
+	// let k = I::from_num(-0.0001 as I32F32 * era_index as I32F32);
+	// let d = I::from_num(100000);
+	// let y = c / ( (1 as I64F64) + a * exp(k) ) * d;
 
-	if era_index == 0 {
-		N::zero()
-	} else {
-		new_total.saturated_into::<N>()
-	}
+	let new_issuance = era_index * 100 * 1000000;
 
+	new_issuance.saturated_into::<N>()
 }
 
 impl<'a> PiecewiseLinear<'a> {

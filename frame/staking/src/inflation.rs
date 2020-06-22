@@ -45,7 +45,7 @@ pub fn compute_total_payout<N>(
 		old_issuance.clone(),
 	);
 	// Calculate the amount that should be minted based on the network inflation rate
-	let new_issuance: N = calculate_issuance(era_index, old_issuance);
+	let new_issuance: N = calculate_issuance(era_index, old_issuance.clone());
 
 	// Check the reward ratio is below the inflation rate
 	if payout >= new_issuance {

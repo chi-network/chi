@@ -47,7 +47,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn executable_name() -> &'static str {
-		"substrate"
+		"chi"
 	}
 
 	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
